@@ -56,11 +56,10 @@ h1 {
 }
 
 .events-list {
-    display: grid;
-    /* On utilise auto-fill pour permettre plusieurs colonnes si l'espace le permet,
-       mais on s'assure qu'il n'y ait jamais moins de 1fr (une seule colonne) */
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px; /* Réduction de l'espace entre les cartes */
+    /* Changement clé ici : plus de grille, juste un conteneur flex */
+    display: flex;
+    flex-direction: column; /* Les éléments s'empilent verticalement */
+    gap: 10px; /* Réduction de l'espace entre les cartes */
 }
 
 .event-card {
@@ -77,8 +76,8 @@ h1 {
 }
 
 .event-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px); /* Moins de déplacement vertical pour une liste */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 
 .event-date-box {
@@ -175,17 +174,22 @@ h1 {
 }
 
 .event-description {
-    grid-column: 1 / -1; /* Pour que la description prenne toute la largeur si elle est affichée dans le grid */
+    /* La description est maintenant gérée comme un élément "frère" de la carte */
     background-color: #f0e6d6; /* Fond de la description */
     padding: 15px;
-    margin-top: 10px;
-    border-radius: 5px;
+    margin-top: -5px; /* Remonte un peu pour coller à la carte */
+    margin-bottom: 15px; /* Marge en bas pour séparer de la prochaine carte */
+    border-radius: 0 0 8px 8px; /* Coins arrondis seulement en bas */
     border: 1px solid #bea3e5;
+    border-top: none; /* Pas de bordure en haut car elle se connecte à la carte */
     font-size: 0.9em;
     color: #5e0889;
     display: none; /* Cachée par défaut */
     line-height: 1.5;
     white-space: pre-wrap; /* Préserve les retours à la ligne du texte de la description */
+    width: calc(100% - 30px); /* Ajuste la largeur pour le padding */
+    margin-left: auto; /* Centre la description si le parent est plus large */
+    margin-right: auto;
 }
 
 .event-description.show {
@@ -193,7 +197,6 @@ h1 {
 }
 
 .no-events-message {
-    grid-column: 1 / -1;
     text-align: center;
     font-size: 1.2em;
     color: #5e0889; /* Message d'absence d'événements : Violet foncé */
@@ -237,6 +240,11 @@ h1 {
     .event-link {
         width: 100%; /* Le bouton prend toute la largeur sur mobile */
         margin-top: 10px;
+    }
+    .event-description {
+        width: calc(100% - 30px); /* Ajuste la largeur pour le padding sur mobile aussi */
+        margin-top: -5px;
+        margin-bottom: 10px;
     }
 }
 
