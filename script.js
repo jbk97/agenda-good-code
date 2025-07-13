@@ -2,16 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // L'URL de votre nouvelle fonction backend Vercel.
     const BACKEND_API_URL = 'https://agenda-good.vercel.app/api/events';
 
-    // Suppression de BASE_PLACEHOLDER_IMAGE_URL car nous n'affichons plus d'images.
-
     let events = []; // Cet array sera rempli par les données du backend
 
     const eventsListDiv = document.getElementById('events-list');
     const dateFilter = document.getElementById('date-filter');
     const cityFilter = document.getElementById('city-filter');
     const typeFilter = document.getElementById('type-filter');
-
-    // Suppression de la fonction generateEventPlaceholderImage car plus d'images.
 
     // Fonction pour afficher les événements
     async function displayEvents(filteredEvents) {
@@ -22,16 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const fragment = document.createDocumentFragment();
+
         for (const event of filteredEvents) {
             const eventCard = document.createElement('div');
             eventCard.classList.add('event-card');
 
             // Formatage de la date pour le carré à gauche
-            const eventDate = new Date(event.date);
-            const month = eventDate.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(); // Ex: DÉC
-            const day = eventDate.getDate(); // Ex: 1
+            // Convertit JJ/MM/AAAA en un format YYYY-MM-DD pour Date()
+            const dateParts = event.date.split('/');
+            const formattedDateForDisplay = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}` : event.date;
+            const eventDate = new Date(formattedDateForDisplay);
 
-            // Création de l'élément de carte avec la nouvelle structure
+            if (isNaN(eventDate.getTime())) {
+                console.warn(`Date non valide pour l'événement "${event.name}": ${event.date}.`);
+                continue;
+            }
+
+            const month = eventDate.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+            const day = eventDate.getDate();
+
             eventCard.innerHTML = `
                 <div class="event-date-box">
                     <span class="month">${month}</span>
@@ -44,23 +50,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="event-actions">
                     <a href="${event.link}" target="_blank" class="event-link">Réserver</a>
-                    ${event.description ? `<button class="toggle-description-btn" data-event-id="${event.id}">Plus d'infos</button>` : ''}
+                    ${event.description && event.description.trim() !== '' ? `<button class="toggle-description-btn" data-event-id="${event.id}">Plus d'infos</button>` : ''}
                 </div>
             `;
-            eventsListDiv.appendChild(eventCard);
+            fragment.appendChild(eventCard);
 
-            // Si une description existe, ajoutez le conteneur de description juste après la carte
-            if (event.description) {
+            if (event.description && event.description.trim() !== '') {
                 const descriptionDiv = document.createElement('div');
                 descriptionDiv.classList.add('event-description');
-                descriptionDiv.id = `description-${event.id}`; // ID pour cibler facilement
+                descriptionDiv.id = `description-${event.id}`;
                 descriptionDiv.innerHTML = `<p>${event.description}</p>`;
-                // Insérer la description juste après la carte dans le flux du document
-                eventsListDiv.appendChild(descriptionDiv);
+                fragment.appendChild(descriptionDiv);
             }
         }
+        eventsListDiv.appendChild(fragment);
 
-        // Ajouter les écouteurs d'événements pour les boutons "Plus d'infos"
         document.querySelectorAll('.toggle-description-btn').forEach(button => {
             button.addEventListener('click', (e) => {
                 const eventId = e.target.dataset.eventId;
@@ -77,40 +81,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     // Fonction pour peupler les filtres de ville et de type
     function populateFilters() {
-        // Collecte des villes uniques
         const cities = [...new Set(events.map(event => event.city))].sort();
-        cityFilter.innerHTML = '<option value="">Toutes les villes</option>'; // Réinitialise les options
+        cityFilter.innerHTML = '<option value="">Toutes les villes</option>';
         cities.forEach(city => {
-            const option = document.createElement('option');
-            option.value = city;
-            option.textContent = city;
-            cityFilter.appendChild(option);
+            if (city && city.trim() !== '') {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                cityFilter.appendChild(option);
+            }
         });
 
-        // Collecte des types uniques
         const types = [...new Set(events.map(event => event.type))].sort();
-        typeFilter.innerHTML = '<option value="">Tous les types</option>'; // Réinitialise les options
+        typeFilter.innerHTML = '<option value="">Tous les types</option>';
         types.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeFilter.appendChild(option);
+            if (type && type.trim() !== '') {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                typeFilter.appendChild(option);
+            }
         });
     }
 
     // Fonction pour filtrer les événements
     function filterEvents() {
-        const selectedDate = dateFilter.value;
+        const selectedDateStr = dateFilter.value; // Ceci sera au format YYYY-MM-DD ou vide
         const selectedCity = cityFilter.value;
         const selectedType = typeFilter.value;
 
+        let selectedDateObj = null;
+        if (selectedDateStr) {
+            selectedDateObj = new Date(selectedDateStr);
+            selectedDateObj.setHours(0, 0, 0, 0);
+        }
+
         const filtered = events.filter(event => {
-            const matchesDate = selectedDate ? event.date === selectedDate : true;
+            let matchesDate = true;
+            if (selectedDateObj) {
+                const eventDateParts = event.date.split('/');
+                let eventDateObj = null;
+                if (eventDateParts.length === 3) {
+                    eventDateObj = new Date(
+                        parseInt(eventDateParts[2]),
+                        parseInt(eventDateParts[1]) - 1,
+                        parseInt(eventDateParts[0])
+                    );
+                    eventDateObj.setHours(0, 0, 0, 0);
+                } else {
+                    eventDateObj = new Date(event.date); // Tentez une conversion directe si déjà bon format
+                    eventDateObj.setHours(0, 0, 0, 0);
+                }
+
+                if (eventDateObj && !isNaN(eventDateObj.getTime())) {
+                    matchesDate = eventDateObj.getTime() === selectedDateObj.getTime();
+                } else {
+                    matchesDate = false;
+                }
+            }
+
             const matchesCity = selectedCity ? event.city === selectedCity : true;
             const matchesType = selectedType ? event.type === selectedType : true;
+
             return matchesDate && matchesCity && matchesType;
         });
 
@@ -127,36 +161,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const eventsFromBackend = await response.json();
 
-            // Mapping des données avec les nouvelles colonnes
-            // Rappel du mappage du backend:
-            // id: row[1] + row[2] (Nom + Date)
-            // photo: ""
-            // date: row[2] (Date de l'événement)
-            // name: row[1] (Nom de l'événement)
-            // location: row[3] (Lieu)
-            // city: row[4] (Ville)
-            // type: row[5] (Type d'événement)
-            // link: row[7] (Lien vers plus d'info)
-            // NOUVEAU : description: row[6] (Description de l'événement)
+            // Mapping des données (correspond aux clés renvoyées par le backend)
             const mappedEvents = eventsFromBackend.map(row => {
                 return {
                     id: row.id,
-                    // photo n'est plus nécessaire dans le frontend pour l'affichage
                     date: row.date,
                     name: row.name,
                     location: row.location,
                     city: row.city,
                     type: row.type,
                     link: row.link,
-                    description: row.description || '' // Assurez-vous d'avoir la description ici
+                    description: row.description || ''
                 };
             });
 
-            // Mettre à jour l'array `events` global
             events.length = 0;
             events.push(...mappedEvents);
 
-            // Mettre à jour les filtres et l'affichage avec les nouvelles données
             populateFilters();
             filterEvents();
             console.log('Événements récupérés du backend Vercel et mis à jour:', events);
@@ -172,6 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cityFilter.addEventListener('change', filterEvents);
     typeFilter.addEventListener('change', filterEvents);
 
-    // Initialisation : récupérer les événements du backend au chargement de la page
+    // Initialisation
     getEventsFromBackend();
 });
