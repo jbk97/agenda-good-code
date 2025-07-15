@@ -1,0 +1,515 @@
+body {
+
+    font-family: "futura-lt-w01-book", Arial, sans-serif; /* Application de la police Futura */
+
+    margin: 0;
+
+    padding: 20px;
+
+    background-color: #f9f4e9; /* Fond général : Crème */
+
+    color: #5e0889; /* Texte principal : Violet foncé */
+
+}
+
+
+
+.container {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    background-color: #f9f4e9; /* Fond du conteneur : Crème */
+
+    padding: 20px;
+
+    border-radius: 8px;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+
+
+
+h1 {
+
+    text-align: center;
+
+    color: #5e0889; /* Titre principal : Violet foncé */
+
+    margin-bottom: 30px;
+
+}
+
+
+
+.filters {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 20px;
+
+    justify-content: center;
+
+    margin-bottom: 30px;
+
+    padding: 15px;
+
+    background-color: #f9f4e9; /* Fond des filtres : Crème */
+
+    border-radius: 5px;
+
+    border: 1px solid #bea3e5; /* Bordure légère pour les filtres : Mauve clair */
+
+}
+
+
+
+.filter-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+
+.filter-group label {
+
+    margin-bottom: 5px;
+
+    font-weight: bold;
+
+    color: #5e0889; /* Texte des labels : Violet foncé */
+
+}
+
+
+
+.filters select,
+
+.filters input[type="date"] {
+
+    padding: 8px;
+
+    border: 1px solid #bea3e5; /* Bordure des champs de filtre : Mauve clair */
+
+    border-radius: 4px;
+
+    font-size: 16px;
+
+    min-width: 180px;
+
+    background-color: #fff; /* Fond des champs de filtre : Blanc */
+
+    color: #5e0889; /* Texte des champs de filtre : Violet foncé */
+
+}
+
+
+
+.events-list {
+
+    /* Changement clé ici : plus de grille, juste un conteneur flex */
+
+    display: flex;
+
+    flex-direction: column; /* Les éléments s'empilent verticalement */
+
+    gap: 10px; /* Réduction de l'espace entre les cartes */
+
+}
+
+
+
+.event-card {
+
+    background-color: #ecdccc; /* Fond des cartes : Nouvelle couleur #ecdccc */
+
+    border: 1px solid #bea3e5; /* Bordure des cartes : Mauve clair */
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+    transition: transform 0.2s ease-in-out;
+
+    display: flex; /* Utilisation de flexbox pour l'agencement interne */
+
+    align-items: center; /* Alignement vertical */
+
+    padding: 15px; /* Espacement interne */
+
+    gap: 15px; /* Espace entre les éléments de la carte */
+
+}
+
+
+
+.event-card:hover {
+
+    transform: translateY(-2px); /* Moins de déplacement vertical pour une liste */
+
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+
+}
+
+
+
+.event-date-box {
+
+    flex-shrink: 0; /* Empêche la boîte de date de rétrécir */
+
+    width: 80px; /* Largeur fixe pour la boîte de date */
+
+    height: 80px; /* Hauteur fixe pour la boîte de date */
+
+    background-color: #be5219; /* Couleur du carré de date : Orange brûlé */
+
+    color: #f9f4e9; /* Texte blanc/crème pour la date */
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 6px;
+
+    font-weight: bold;
+
+    font-size: 1.2em; /* Taille de police pour la date */
+
+    text-align: center;
+
+    line-height: 1.2;
+
+}
+
+
+
+.event-date-box .month {
+
+    font-size: 0.8em; /* Taille de police pour le mois */
+
+    text-transform: uppercase;
+
+}
+
+.event-date-box .day {
+
+    font-size: 1.8em; /* Taille de police pour le jour */
+
+}
+
+
+
+
+
+.event-main-info {
+
+    flex-grow: 1; /* Permet à cette section de prendre l'espace restant */
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+
+.event-main-info h2 {
+
+    margin: 0 0 5px 0; /* Réinitialise les marges du titre */
+
+    font-size: 1.3em; /* Taille du nom de l'événement */
+
+    color: #5e0889; /* Couleur du nom de l'événement */
+
+    line-height: 1.2;
+
+}
+
+
+
+.event-main-info p {
+
+    margin: 0 0 3px 0; /* Marges réduites pour les paragraphes */
+
+    font-size: 0.9em;
+
+    color: #5e0889;
+
+}
+
+
+
+.event-main-info .type {
+
+    font-style: italic; /* Style pour le type */
+
+    color: #de7d37; /* Couleur différente pour le type */
+
+    font-size: 0.85em;
+
+    margin-bottom: 8px;
+
+}
+
+
+
+.event-actions {
+
+    flex-shrink: 0; /* Empêche cette section de rétrécir */
+
+    display: flex;
+
+    flex-direction: column; /* Pour bouton et description toggle */
+
+    align-items: flex-end; /* Alignement à droite */
+
+    gap: 10px;
+
+}
+
+
+
+.event-link {
+
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    background-color: #be5219; /* Boutons : Orange brûlé */
+
+    color: #f9f4e9; /* Texte des boutons : Crème */
+
+    text-decoration: none;
+
+    border-radius: 5px;
+
+    text-align: center;
+
+    font-weight: bold;
+
+    white-space: nowrap; /* Empêche le texte du bouton de se casser */
+
+    transition: background-color 0.2s;
+
+}
+
+
+
+.event-link:hover {
+
+    background-color: #de7d37; /* Boutons au survol : Orange plus clair */
+
+}
+
+
+
+/* Style pour le bouton "Plus d'infos" (description) */
+
+.toggle-description-btn {
+
+    background: none;
+
+    border: none;
+
+    color: #5e0889; /* Couleur du texte du bouton */
+
+    cursor: pointer;
+
+    font-size: 0.9em;
+
+    text-decoration: underline;
+
+    padding: 0;
+
+    transition: color 0.2s;
+
+}
+
+
+
+.toggle-description-btn:hover {
+
+    color: #be5219; /* Couleur au survol */
+
+}
+
+
+
+.event-description {
+
+    /* La description est maintenant gérée comme un élément "frère" de la carte */
+
+    background-color: #f0e6d6; /* Fond de la description */
+
+    padding: 15px;
+
+    margin-top: -5px; /* Remonte un peu pour coller à la carte */
+
+    margin-bottom: 15px; /* Marge en bas pour séparer de la prochaine carte */
+
+    border-radius: 0 0 8px 8px; /* Coins arrondis seulement en bas */
+
+    border: 1px solid #bea3e5;
+
+    border-top: none; /* Pas de bordure en haut car elle se connecte à la carte */
+
+    font-size: 0.9em;
+
+    color: #5e0889;
+
+    display: none; /* Cachée par défaut */
+
+    line-height: 1.5;
+
+    white-space: pre-wrap; /* Préserve les retours à la ligne du texte de la description */
+
+    width: calc(100% - 30px); /* Ajuste la largeur pour le padding */
+
+    margin-left: auto; /* Centre la description si le parent est plus large */
+
+    margin-right: auto;
+
+}
+
+
+
+.event-description.show {
+
+    display: block; /* Affichée quand la classe 'show' est ajoutée par JS */
+
+}
+
+
+
+.no-events-message {
+
+    text-align: center;
+
+    font-size: 1.2em;
+
+    color: #5e0889; /* Message d'absence d'événements : Violet foncé */
+
+    padding: 20px;
+
+    background-color: #bea3e5; /* Fond du message : Mauve clair */
+
+    border-radius: 5px;
+
+    margin-top: 20px;
+
+}
+
+
+
+/* Media Queries pour l'adaptabilité */
+
+@media (max-width: 768px) {
+
+    .filters {
+
+        flex-direction: column;
+
+        align-items: center;
+
+    }
+
+
+
+    .event-card {
+
+        flex-direction: column; /* Empile les éléments sur petits écrans */
+
+        align-items: flex-start;
+
+        text-align: left;
+
+    }
+
+
+
+    .event-date-box {
+
+        width: 100%; /* La boîte de date prend toute la largeur */
+
+        height: auto;
+
+        padding: 10px 0;
+
+        border-radius: 8px 8px 0 0; /* Coins arrondis seulement en haut */
+
+        font-size: 1.5em;
+
+    }
+
+
+
+    .event-main-info {
+
+        width: 100%;
+
+        text-align: left;
+
+    }
+
+
+
+    .event-actions {
+
+        width: 100%;
+
+        align-items: stretch; /* Le bouton prend toute la largeur */
+
+    }
+
+
+
+    .event-link {
+
+        width: 100%; /* Le bouton prend toute la largeur sur mobile */
+
+        margin-top: 10px;
+
+    }
+
+    .event-description {
+
+        width: calc(100% - 30px); /* Ajuste la largeur pour le padding sur mobile aussi */
+
+        margin-top: -5px;
+
+        margin-bottom: 10px;
+
+    }
+
+}
+
+
+
+@media (max-width: 480px) {
+
+    body {
+
+        padding: 10px;
+
+    }
+
+    .container {
+
+        padding: 10px;
+
+    }
+
+}
